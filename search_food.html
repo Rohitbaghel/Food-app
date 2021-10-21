@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>FoodRecipe-Home</title>
+    <style>
+        img{
+            width: 300px;
+            align-items: center;
+        }
+       #food_name{
+         /* border: 1px solid red ; */
+         flex-basis:25%;
+        
+         margin-top: 0;
+         height: 300px;
+         overflow: scroll;
+
+        
+       } 
+       #main{
+         display: flex;
+         justify-content:space-between;
+       }
+       #div1{
+         /* border: 1px solid ; */
+         flex-basis: 60%;
+         
+       }
+       .d-flex{
+         width:30%
+       }
+    
+        
+    </style>
+</head>
+<body>
+  <div class="container-fluid" id="container">
+      <div id="navbar" id="navbar">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">FoodRecipe.com</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="home.html">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="latest.html">Latest</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="search_food.html">Search</a>search</a>
+                  </li>
+                </ul>
+               
+                <form class="d-flex" >
+                  <input class="form-control" id ="food" type="search" placeholder="Search" aria-label="Search" oninput="debouncing(main,1000)">
+                  <button class="btn btn-outline-success" type="submit" onclick="foodsearch(event)">Search</button>
+                </form>
+              </div>
+            </div>
+          </nav>
+      </div>
+     
+      <div id="main">
+        <div id="div1">
+          <h1> Search Recipe Here</h1>
+        </div>
+          
+          <div id="food_name"></div>
+      </div>
+     
+  </div>
+</body>
+</html>
+<script >
+  let food_name = document.getElementById("food_name");
+  let interval ;
+ async function main() {
+    let input = document.getElementById("food").value
+    if(input==undefined){
+      return false
+    }
+    // console.log(input)
+    try {
+let res = await fetch(`http://themealdb.com/api/json/v1/1/search.php?s=${input}`)
+let data = await res.json()
+// console.log(data.meals)
+append(data.meals)
+
+    }catch(e) {
+    console.log("No item find " + e)
+
+    }
+  }
+  function append(data) {
+    food_name.innerHTML = null
+    data.forEach(({strMeal})=>{
+let name = document.createElement("p")
+name.textContent = strMeal
+    // console.log(name)
+    food_name.append(name)
+    })
+  }
+
+  function debouncing(func,delay) {
+    if(interval){
+      clearTimeout(interval)
+    }
+interval =setTimeout(function(){
+  func()
+},delay)
+  }
+  function foodsearch(e){
+    // e.preventDefault();
+  let input = document.getElementById("food").value;
+  // console.log(input)
+  let res =  fetch(`http://themealdb.com/api/json/v1/1/search.php?s=${input}`)
+  .then((res)=>{
+      return res.json()
+  })
+  .then((res)=>{
+      console.log(res.meals)
+     append_recipe(res.meals)
+  })
+  .catch((err)=>{
+      console.log(err)
+
+  })
+ 
+}
+function append_recipe(data,container){
+    let main = document.getElementById("div1")
+    main.innerHTML= null
+      data.forEach(({strMeal,strCategory,strArea,strInstructions,strMealThumb,strYoutube,strIngredient1,strIngredient2,strIngredient3,strIngredient4,strIngredient5,strIngredient6,strMeasure1,strMeasure2,strMeasure3,strMeasure4,strMeasure5,strMeasure6})=>{
+  let img = document.createElement('img')
+  img.src = strMealThumb
+  let name = document.createElement('h3')
+  name.textContent = "Name: "+strMeal
+  let category = document.createElement('h6')
+  category.textContent = "Catergory: "+strCategory
+  let area = document.createElement('p')
+  area.textContent = "Style: "+strArea
+  let description = document.createElement('p');
+  description.textContent =strInstructions
+  let h4 = document.createElement('h4')
+  h4.innerText = "Ingredient"
+  let i_1 = document.createElement('p')
+  i_1.textContent="Ingredient1:"+strIngredient1
+  let i_2 = document.createElement('p')
+  i_2.textContent="Ingredient2:"+strIngredient2
+  let i_3 = document.createElement('p')
+  i_3.textContent="Ingredient3:"+strIngredient3
+  let i_4 = document.createElement('p')
+  i_4.textContent="Ingredient4:"+strIngredient4
+  let i_5 = document.createElement('p')
+  i_5.textContent="Ingredient5:"+strIngredient5
+  let m_1 = document.createElement('p')
+  m_1.textContent="measurement1: " +strMeasure1
+  let m_2 = document.createElement('p')
+  m_2.textContent="measurement2: " +strMeasure2
+  let m_3 = document.createElement('p')
+  m_3.textContent="measurement3: " +strMeasure3
+  let m_4 = document.createElement('p')
+  m_4.textContent="measurement4: " +strMeasure4
+  let m_5 = document.createElement('p')
+  m_5.textContent="measurement5: " +strMeasure5
+  let m_6 = document.createElement('p')
+  m_6.textContent="measurement6: " +strMeasure6
+  
+  main.append(img,name,category,area,strInstructions,h4,i_1,i_2,i_3,i_4,i_5,m_1,m_2,m_3,m_4,m_5,m_6)
+  
+      })
+  }
+ 
+  
+</script>
