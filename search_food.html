@@ -118,7 +118,7 @@ interval =setTimeout(function(){
 },delay)
   }
   function foodsearch(e){
-    // e.preventDefault();
+    e.preventDefault();
   let input = document.getElementById("food").value;
   // console.log(input)
   let res =  fetch(`http://themealdb.com/api/json/v1/1/search.php?s=${input}`)
